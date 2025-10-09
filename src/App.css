@@ -4,54 +4,71 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Use the minimum of viewport width and height for square layout */
+  --unit: min(100vw, 100vh);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+  width: var(--unit);
+  height: var(--unit);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--unit) * 0.02);
+  font-size: clamp(10px, calc(var(--unit) * 0.015), 16px);
 }
 
 .header {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
+  border-radius: calc(var(--unit) * 0.006);
+  padding: calc(var(--unit) * 0.01) calc(var(--unit) * 0.015);
+  margin-bottom: calc(var(--unit) * 0.01);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  gap: calc(var(--unit) * 0.01);
+  box-shadow: 0 calc(var(--unit) * 0.002) calc(var(--unit) * 0.004) rgba(0, 0, 0, 0.1);
+  width: calc(var(--unit) * 0.95);
+  max-width: 100%;
 }
 
 h1 {
   color: #2a5298;
-  font-size: 2em;
+  font-size: calc(var(--unit) * 0.025);
   font-weight: 700;
   margin: 0;
 }
 
 .controls {
   display: flex;
-  gap: 20px;
+  gap: calc(var(--unit) * 0.015);
   align-items: center;
   flex-wrap: wrap;
   font-weight: 600;
   color: #495057;
+  font-size: calc(var(--unit) * 0.013);
 }
 
 .btn-primary {
-  padding: 10px 20px;
+  padding: calc(var(--unit) * 0.006) calc(var(--unit) * 0.012);
   border: none;
-  border-radius: 5px;
+  border-radius: calc(var(--unit) * 0.004);
   background: #28a745;
   color: white;
-  font-size: 14px;
+  font-size: calc(var(--unit) * 0.012);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -59,39 +76,40 @@ h1 {
 
 .btn-primary:hover {
   background: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(calc(var(--unit) * -0.002));
+  box-shadow: 0 calc(var(--unit) * 0.004) calc(var(--unit) * 0.008) rgba(0, 0, 0, 0.2);
 }
 
 .game-area {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 30px;
-  min-height: 600px;
+  border-radius: calc(var(--unit) * 0.006);
+  padding: calc(var(--unit) * 0.01);
+  width: calc(var(--unit) * 0.98);
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-height: calc(var(--unit) * 0.94);
 }
 
 .top-row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 40px;
-  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: calc(var(--unit) * 0.015);
+  gap: calc(var(--unit) * 0.008);
+  width: 100%;
 }
 
-.stock-waste {
-  display: flex;
-  gap: 20px;
-}
-
-.foundations {
-  display: flex;
-  gap: 15px;
+.spacer {
+  width: calc(var(--unit) * 0.095);
 }
 
 .card-pile {
-  width: 100px;
-  height: 140px;
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  width: calc(var(--unit) * 0.095);
+  height: calc(var(--unit) * 0.134);
+  border: calc(var(--unit) * 0.002) dashed rgba(255, 255, 255, 0.3);
+  border-radius: calc(var(--unit) * 0.008);
   position: relative;
   display: flex;
   align-items: center;
@@ -113,47 +131,128 @@ h1 {
 }
 
 .card {
-  width: 96px;
-  height: 136px;
+  width: calc(var(--unit) * 0.095);
+  height: calc(var(--unit) * 0.134);
   background: white;
-  border-radius: 6px;
+  border-radius: calc(var(--unit) * 0.008);
   position: absolute;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  top: 0;
+  left: 0;
+  box-shadow: 0 calc(var(--unit) * 0.002) calc(var(--unit) * 0.004) rgba(0, 0, 0, 0.2);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 80px;
+  gap: calc(var(--unit) * 0.005);
+  font-size: calc(var(--unit) * 0.085);
   cursor: grab;
   transition: transform 0.2s;
   user-select: none;
   line-height: 1;
-  /* Ensure emoji/unicode color rendering */
-  font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-  color: transparent;
-  text-shadow: 0 0 0 #000;
+  font-family: "Segoe UI", "Arial", sans-serif;
+  color: #000;
+  overflow: hidden;
+}
+
+.card[draggable="true"] {
+  cursor: grab;
+  transition: opacity 0.2s;
+}
+
+.card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.card-flying {
+  animation: flyToFoundation 0.4s ease-in-out forwards;
+  z-index: 1000;
+}
+
+@keyframes flyToFoundation {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(calc(var(--unit) * -0.15)) scale(1.1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(calc(var(--unit) * -0.3)) translateX(calc(var(--unit) * 0.2)) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  display: block;
+  animation: cardShimmer 8s ease-in-out infinite;
+}
+
+@keyframes cardShimmer {
+  0% {
+    filter: brightness(1) contrast(1) saturate(1);
+  }
+  25% {
+    filter: brightness(1.05) contrast(1.02) saturate(1.1);
+  }
+  50% {
+    filter: brightness(1.08) contrast(1.05) saturate(1.15) hue-rotate(2deg);
+  }
+  75% {
+    filter: brightness(1.05) contrast(1.02) saturate(1.1);
+  }
+  100% {
+    filter: brightness(1) contrast(1) saturate(1);
+  }
+}
+
+.card-loading {
+  background: rgba(255, 255, 255, 0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.card-rank {
+  font-size: calc(var(--unit) * 0.035);
+  font-weight: bold;
+}
+
+.card-suit {
+  font-size: calc(var(--unit) * 0.045);
+  font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
 }
 
 /* Red suits - Hearts and Diamonds */
-.card[data-suit="hearts"],
-.card[data-suit="diamonds"] {
-  color: transparent;
-  text-shadow: 0 0 0 #dc143c;
+.card[data-suit="hearts"] .card-rank,
+.card[data-suit="hearts"] .card-suit,
+.card[data-suit="diamonds"] .card-rank,
+.card[data-suit="diamonds"] .card-suit {
+  color: #dc143c;
 }
 
 /* Black suits - Spades and Clubs */
-.card[data-suit="spades"],
-.card[data-suit="clubs"] {
-  color: transparent;
-  text-shadow: 0 0 0 #000;
+.card[data-suit="spades"] .card-rank,
+.card[data-suit="spades"] .card-suit,
+.card[data-suit="clubs"] .card-rank,
+.card[data-suit="clubs"] .card-suit {
+  color: #000;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.card:active {
-  cursor: grabbing;
+.card[draggable="true"]:hover {
+  transform: translateY(calc(var(--unit) * -0.003));
+  box-shadow: 0 calc(var(--unit) * 0.003) calc(var(--unit) * 0.006) rgba(0, 0, 0, 0.3);
 }
 
 .card.face-down {
@@ -167,82 +266,138 @@ h1 {
 }
 
 .card-back {
-  font-size: 80px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: calc(var(--unit) * 0.008);
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 calc(var(--unit) * 0.002) calc(var(--unit) * 0.004) rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--unit) * 0.085);
   color: rgba(255, 255, 255, 0.3);
+  user-select: none;
+  overflow: hidden;
+}
+
+.card-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  display: block;
+  animation: cardBackGlow 10s ease-in-out infinite;
+}
+
+@keyframes cardBackGlow {
+  0% {
+    filter: brightness(1) saturate(1) hue-rotate(0deg);
+  }
+  33% {
+    filter: brightness(1.1) saturate(1.2) hue-rotate(5deg);
+  }
+  66% {
+    filter: brightness(1.15) saturate(1.3) hue-rotate(-5deg);
+  }
+  100% {
+    filter: brightness(1) saturate(1) hue-rotate(0deg);
+  }
 }
 
 .card-empty {
-  font-size: 60px;
+  width: calc(var(--unit) * 0.095);
+  height: calc(var(--unit) * 0.134);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: calc(var(--unit) * 0.008);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--unit) * 0.065);
   color: rgba(255, 255, 255, 0.5);
+  user-select: none;
 }
 
 .pile-placeholder {
-  font-size: 40px;
+  font-size: calc(var(--unit) * 0.045);
   color: rgba(255, 255, 255, 0.2);
   font-weight: bold;
+  user-select: none;
 }
 
 .tableau {
   display: flex;
-  gap: 15px;
+  gap: calc(var(--unit) * 0.008);
   justify-content: center;
+  flex: 1;
+  align-items: flex-start;
 }
 
 .tableau-column {
-  width: 100px;
-  min-height: 200px;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  width: calc(var(--unit) * 0.095);
+  min-height: calc(var(--unit) * 0.134);
+  border: calc(var(--unit) * 0.002) dashed rgba(255, 255, 255, 0.2);
+  border-radius: calc(var(--unit) * 0.008);
   position: relative;
-  padding-top: 5px;
+  padding-top: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
 .tableau-column .card {
-  left: 2px;
+  left: 0;
 }
 
-@media (max-width: 1200px) {
-  .tableau {
-    gap: 10px;
-  }
-  
-  .tableau-column,
-  .card-pile {
-    width: 80px;
-  }
-  
-  .card {
-    width: 76px;
-    height: 106px;
-    font-size: 60px;
-  }
+/* Card stacking in tableau */
+.tableau-column .card {
+  position: absolute;
 }
 
-@media (max-width: 768px) {
+/* Responsive adjustments - mainly for very small screens */
+@media (max-width: 768px) and (max-height: 600px) {
+  .app {
+    padding: min(1vh, 1vw);
+  }
+
+  .header {
+    padding: min(1vh, 1vw);
+    margin-bottom: min(1vh, 1vw);
+  }
+
   h1 {
-    font-size: 1.5em;
+    font-size: min(3vh, 3vw);
   }
-  
+
+  .controls {
+    font-size: min(1.5vh, 1.5vw);
+  }
+
+  .btn-primary {
+    font-size: min(1.5vh, 1.5vw);
+    padding: min(0.8vh, 0.8vw) min(1.5vh, 1.5vw);
+  }
+
+  .game-area {
+    padding: min(2vh, 2vw);
+  }
+
   .top-row {
-    flex-direction: column;
+    gap: min(2vh, 2vw);
+    margin-bottom: min(2vh, 2vw);
   }
-  
+
+  .stock-waste,
+  .foundations {
+    gap: min(1vh, 1vw);
+  }
+
   .tableau {
-    gap: 8px;
-  }
-  
-  .tableau-column,
-  .card-pile {
-    width: 60px;
-    height: 84px;
-  }
-  
-  .card {
-    width: 56px;
-    height: 80px;
-    font-size: 40px;
+    gap: min(1vh, 1vw);
   }
 }

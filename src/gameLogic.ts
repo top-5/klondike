@@ -1,4 +1,4 @@
-import type { Card, GameState, Rank, Suit } from './types';
+import type { Card, GameState } from './types';
 import { SUITS, RANKS, getRankValue, isRed, isBlack } from './types';
 
 export function createDeck(): Card[] {

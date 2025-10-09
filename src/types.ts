@@ -16,28 +16,6 @@ export interface GameState {
   startTime: number;
 }
 
-// Unicode playing card characters (colored!)
-export const CARD_GLYPHS: Record<Suit, Record<Rank, string>> = {
-  spades: {
-    'A': '🂡', '2': '🂢', '3': '🂣', '4': '🂤', '5': '🂥', '6': '🂦', '7': '🂧',
-    '8': '🂨', '9': '🂩', '10': '🂪', 'J': '🂫', 'Q': '🂬', 'K': '🂭'
-  },
-  hearts: {
-    'A': '🂱', '2': '🂲', '3': '🂳', '4': '🂴', '5': '🂵', '6': '🂶', '7': '🂷',
-    '8': '🂸', '9': '🂹', '10': '🂺', 'J': '🂻', 'Q': '🂼', 'K': '🂽'
-  },
-  diamonds: {
-    'A': '🃁', '2': '🃂', '3': '🃃', '4': '🃄', '5': '🃅', '6': '🃆', '7': '🃇',
-    '8': '🃈', '9': '🃉', '10': '🃊', 'J': '🃋', 'Q': '🃌', 'K': '🃍'
-  },
-  clubs: {
-    'A': '🃑', '2': '🃒', '3': '🃓', '4': '🃔', '5': '🃕', '6': '🃖', '7': '🃗',
-    '8': '🃘', '9': '🃙', '10': '🃚', 'J': '🃛', 'Q': '🃜', 'K': '🃝'
-  }
-};
-
-export const CARD_BACK = '🂠';
-
 export const RANKS: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 export const SUITS: Suit[] = ['spades', 'hearts', 'diamonds', 'clubs'];
 
@@ -53,7 +31,10 @@ export function getRankValue(rank: Rank): number {
   return RANKS.indexOf(rank);
 }
 
-export function getCardGlyph(card: Card): string {
-  if (!card.faceUp) return CARD_BACK;
-  return CARD_GLYPHS[card.suit]?.[card.rank] || CARD_BACK;
+// Get sprite position for a card
+// Spritesheet layout: 4 rows (spades, hearts, diamonds, clubs) x 13 columns (A-K)
+export function getCardSpritePosition(card: Card): { row: number; col: number } {
+  const suitIndex = SUITS.indexOf(card.suit);
+  const rankIndex = RANKS.indexOf(card.rank);
+  return { row: suitIndex, col: rankIndex };
 }
