@@ -42,26 +42,26 @@ function App() {
     return () => clearInterval(timer);
   }, [gameState.startTime]);
 
-  // Handle custom drag mouse move
+  // Handle custom drag mouse/touch move
   useEffect(() => {
     if (!customDrag?.isDragging) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMove = (clientX: number, clientY: number) => {
       setCustomDrag(prev => prev ? {
         ...prev,
-        currentX: e.clientX,
-        currentY: e.clientY
+        currentX: clientX,
+        currentY: clientY
       } : null);
     };
 
-    const handleMouseUp = (e: MouseEvent) => {
+    const handleEnd = (clientX: number, clientY: number) => {
       if (!customDrag) return;
 
       // Reset cursor
       document.body.style.cursor = '';
 
       // Find the drop target
-      const target = document.elementFromPoint(e.clientX, e.clientY);
+      const target = document.elementFromPoint(clientX, clientY);
       const dropZone = target?.closest('.tableau-column, .card-pile.foundation');
       
       if (dropZone && dragData) {
@@ -86,12 +86,31 @@ function App() {
       setDragData(null);
     };
 
+    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+    const handleMouseUp = (e: MouseEvent) => handleEnd(e.clientX, e.clientY);
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault(); // Prevent scrolling while dragging
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0]!.clientX, e.touches[0]!.clientY);
+      }
+    };
+    const handleTouchEnd = (e: TouchEvent) => {
+      const touch = e.changedTouches[0];
+      if (touch) {
+        handleEnd(touch.clientX, touch.clientY);
+      }
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [customDrag, dragData]);
 
@@ -113,22 +132,19 @@ function App() {
   };
 
   const handleCustomDragStart = (
-    e: React.MouseEvent,
+    clientX: number,
+    clientY: number,
+    rect: DOMRect,
     source: 'waste' | 'tableau',
     index: number,
     cardIndex?: number,
     cards?: Card[]
   ) => {
-    e.preventDefault();
-    
     if (!cards || cards.length === 0) return;
 
-    // Get the position of the clicked card element
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    
-    // Calculate offset from card's top-left corner to mouse position
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
+    // Calculate offset from card's top-left corner to click/touch position
+    const offsetX = clientX - rect.left;
+    const offsetY = clientY - rect.top;
     
     setDragData({ source, index, cardIndex });
     setCustomDrag({
@@ -136,9 +152,9 @@ function App() {
       cards: cards,
       startX: offsetX, // Store offset within the card
       startY: offsetY,
-      currentX: e.clientX,
-      currentY: e.clientY,
-      sourceElement: e.currentTarget as HTMLElement
+      currentX: clientX,
+      currentY: clientY,
+      sourceElement: null
     });
 
     // Set cursor to grabbing
@@ -241,6 +257,7 @@ function App() {
 
     const handleMouseDown = (e: React.MouseEvent) => {
       if (!draggable) return;
+      e.preventDefault();
       
       // Get the cards to drag (current card and all below it in the column)
       let cardsToMove: Card[] = [card];
@@ -248,8 +265,27 @@ function App() {
         cardsToMove = column.slice(cardIndex);
       }
 
-      // Start custom drag
-      handleCustomDragStart(e, 'tableau', 0, cardIndex, cardsToMove);
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      handleCustomDragStart(e.clientX, e.clientY, rect, 'tableau', 0, cardIndex, cardsToMove);
+      
+      if (onDragStart) onDragStart();
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+      if (!draggable) return;
+      e.preventDefault();
+      
+      // Get the cards to drag (current card and all below it in the column)
+      let cardsToMove: Card[] = [card];
+      if (column && cardIndex !== undefined && cardIndex < column.length - 1) {
+        cardsToMove = column.slice(cardIndex);
+      }
+
+      const touch = e.touches[0];
+      if (touch) {
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        handleCustomDragStart(touch.clientX, touch.clientY, rect, 'tableau', 0, cardIndex, cardsToMove);
+      }
       
       if (onDragStart) onDragStart();
     };
@@ -284,6 +320,7 @@ function App() {
           cursor: draggable ? 'grab' : 'default'
         }}
         onMouseDown={draggable ? handleMouseDown : undefined}
+        onTouchStart={draggable ? handleTouchStart : undefined}
         onDoubleClick={draggable ? handleClick : undefined}
       >
         <img src={imageUrl} alt={`${card.rank} of ${card.suit}`} draggable={false} />
