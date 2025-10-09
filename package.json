@@ -1,7 +1,7 @@
 {
   "name": "klondike-solitaire",
   "version": "2.0.0",
-  "description": "Klondike Solitaire game built with React, TypeScript, and Vite using Unicode colored card glyphs",
+  "description": "Klondike Solitaire game built with React, TypeScript, and Vite using spritesheet-based card graphics and custom drag-and-drop",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -26,7 +26,8 @@
     "react",
     "typescript",
     "vite",
-    "unicode-cards"
+    "spritesheet",
+    "custom-drag-drop"
   ],
   "author": "Top-5",
   "license": "SEE LICENSE IN LICENSE",
