@@ -1,0 +1,248 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #2a5298;
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-weight: 600;
+  color: #495057;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background: #28a745;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-area {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 30px;
+  min-height: 600px;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.stock-waste {
+  display: flex;
+  gap: 20px;
+}
+
+.foundations {
+  display: flex;
+  gap: 15px;
+}
+
+.card-pile {
+  width: 100px;
+  height: 140px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.card-pile.stock {
+  cursor: pointer;
+}
+
+.card-pile.stock:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.card-pile.foundation {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.card {
+  width: 96px;
+  height: 136px;
+  background: white;
+  border-radius: 6px;
+  position: absolute;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  cursor: grab;
+  transition: transform 0.2s;
+  user-select: none;
+  line-height: 1;
+  /* Ensure emoji/unicode color rendering */
+  font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+/* Red suits - Hearts and Diamonds */
+.card[data-suit="hearts"],
+.card[data-suit="diamonds"] {
+  color: transparent;
+  text-shadow: 0 0 0 #dc143c;
+}
+
+/* Black suits - Spades and Clubs */
+.card[data-suit="spades"],
+.card[data-suit="clubs"] {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.card.face-down {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: default;
+}
+
+.card.face-down:hover {
+  transform: none;
+}
+
+.card-back {
+  font-size: 80px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.card-empty {
+  font-size: 60px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pile-placeholder {
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+}
+
+.tableau {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.tableau-column {
+  width: 100px;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  position: relative;
+  padding-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tableau-column .card {
+  left: 2px;
+}
+
+@media (max-width: 1200px) {
+  .tableau {
+    gap: 10px;
+  }
+  
+  .tableau-column,
+  .card-pile {
+    width: 80px;
+  }
+  
+  .card {
+    width: 76px;
+    height: 106px;
+    font-size: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  .top-row {
+    flex-direction: column;
+  }
+  
+  .tableau {
+    gap: 8px;
+  }
+  
+  .tableau-column,
+  .card-pile {
+    width: 60px;
+    height: 84px;
+  }
+  
+  .card {
+    width: 56px;
+    height: 80px;
+    font-size: 40px;
+  }
+}

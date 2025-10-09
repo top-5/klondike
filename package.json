@@ -1,0 +1,50 @@
+{
+  "name": "klondike-solitaire",
+  "version": "2.0.0",
+  "description": "Klondike Solitaire game built with React, TypeScript, and Vite using Unicode colored card glyphs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "clean": "rimraf dist"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "solitaire",
+    "klondike",
+    "card-game",
+    "react",
+    "typescript",
+    "vite",
+    "unicode-cards"
+  ],
+  "author": "Top-5",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@typescript-eslint/parser": "^8.16.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.15.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.20",
+    "vitest": "^2.1.8"
+  }
+}
