@@ -1,13 +1,17 @@
 # 🃏 Klondike Solitaire
 **Modern TypeScript Edition – React + Vite**
 
-A modern, type-safe implementation of Classic Klondike Solitaire, built with React, TypeScript, and Vite, featuring Unicode-colored cards, intuitive drag & drop, and full move validation logic.
+A modern, type-safe implementation of Classic Klondike Solitaire, built with React, TypeScript, and Vite, featuring beautiful spritesheet cards, intuitive drag & drop, auto-move functionality, and full move validation logic.
+
+🎮 **[Play Now on GitHub Pages](https://top-5.github.io/klondike/)**
 
 ## ✨ Features
 
 - ♠️ **Classic Klondike Rules** – Traditional solitaire gameplay
-- 🎨 **Unicode Card Graphics** – Colored card glyphs (🂡🂱🃁🃑)
-- 🎮 **Drag & Drop Interface** – Intuitive card movement
+- 🎨 **Beautiful Card Graphics** – High-quality spritesheet rendering with subtle animations
+- 🎮 **Drag & Drop Interface** – Intuitive card movement with smooth animations
+- 🚀 **Auto-Move to Foundation** – Double-click cards to automatically send them to foundations
+- ✨ **Flying Animation** – Cards fly to their destination with beautiful arc motion
 - ✅ **Move Validation** – Only valid moves allowed
 - 🔄 **Stock Recycling** – Draw through deck multiple times
 - 🏆 **Win Detection** – Automatic celebration on completion
