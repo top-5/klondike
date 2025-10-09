@@ -30,6 +30,9 @@ node_modules
 # Build output (built by CI/CD)
 dist
 
+# Playwright MCP test artifacts
+.playwright-mcp
+
 # Users Environment Variables
 .lock-wscript
 

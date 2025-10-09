@@ -471,8 +471,8 @@ function App() {
                 position: 'absolute',
                 top: `${idx * 25}px`,
                 left: 0,
-                width: 'calc(min(100vw, 100vh) * 0.095)',
-                height: 'calc(min(100vw, 100vh) * 0.134)'
+                width: 'calc(min(100vw, 100vh) * 0.119)',
+                height: 'calc(min(100vw, 100vh) * 0.168)'
               }}
             >
               <img 

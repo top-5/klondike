@@ -6,6 +6,48 @@
 
 ---
 
+## 🧪 Playwright MCP Compatibility Testing (2025-10-09)
+
+**Observations from live testing:**
+
+### ✅ What Works:
+- Playwright MCP successfully connects to `localhost:10010/klondike/`
+- Page snapshots capture full accessibility tree with card details (e.g., "9 of hearts", "A of clubs")
+- Screenshots render perfectly with scaled cards (25% increase from original)
+- No CORS or sandbox issues
+- Vite HMR hot-reload works seamlessly during testing
+
+### ⚠️ What Doesn't Work (Expected):
+- **Standard Playwright `.dragTo()` fails**: Custom drag-and-drop uses `onMouseDown`/`onMouseMove`/`onMouseUp` handlers that don't respond to synthetic drag events
+- **Standard `.click()` and `.dblclick()` don't trigger game actions**: Event handlers are custom-implemented
+- **Move count remains unchanged**: Automation doesn't trigger React state updates
+
+### 💡 Root Cause:
+The custom drag-and-drop implementation (designed for precise mouse/touch control) uses:
+```typescript
+handleMouseDown / handleTouchStart → setCustomDrag()
+handleMouseMove / handleTouchMove → update drag position
+handleMouseUp / handleTouchEnd → handleDrop()
+```
+
+Playwright's synthetic events don't go through this custom event flow, which is **actually beneficial** because:
+1. It validates the need for proper MCP tool wrappers (TODO section 9)
+2. It confirms DOM instrumentation requirements (`data-testid`, state exposure)
+3. It demonstrates why lower-level `page.mouse.move()` and coordinate-based automation is needed
+
+### 🎯 Next Steps (Prioritized):
+1. **Add `data-testid` attributes** to all interactive elements (see section 9.2)
+2. **Implement `GameStateProbe` component** to expose hidden state in DOM (see section 5.1)
+3. **Build Playwright MCP server** using `page.mouse.down()`, `page.mouse.move()`, `page.mouse.up()` instead of `.dragTo()`
+4. **Test basic automation**: Click stock pile, drag cards by coordinates
+
+### 📊 Card Scaling Results:
+- **Original**: 0.095 × 0.134 (width × height as % of viewport)
+- **Final**: 0.119 × 0.168 (+25% scaling)
+- **Result**: Excellent space utilization, professional appearance, no layout issues
+
+---
+
 ## 🧠 AI & Machine Learning Features
 
 ### 1. AI-Assisted Move System

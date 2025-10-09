@@ -113,12 +113,12 @@ h1 {
 }
 
 .spacer {
-  width: calc(var(--unit) * 0.095);
+  width: calc(var(--unit) * 0.119);
 }
 
 .card-pile {
-  width: calc(var(--unit) * 0.095);
-  height: calc(var(--unit) * 0.134);
+  width: calc(var(--unit) * 0.119);
+  height: calc(var(--unit) * 0.168);
   border: calc(var(--unit) * 0.002) dashed rgba(255, 255, 255, 0.3);
   border-radius: calc(var(--unit) * 0.008);
   position: relative;
@@ -142,8 +142,8 @@ h1 {
 }
 
 .card {
-  width: calc(var(--unit) * 0.095);
-  height: calc(var(--unit) * 0.134);
+  width: calc(var(--unit) * 0.119);
+  height: calc(var(--unit) * 0.168);
   background: white;
   border-radius: calc(var(--unit) * 0.008);
   position: absolute;
@@ -327,8 +327,8 @@ h1 {
 }
 
 .card-empty {
-  width: calc(var(--unit) * 0.095);
-  height: calc(var(--unit) * 0.134);
+  width: calc(var(--unit) * 0.119);
+  height: calc(var(--unit) * 0.168);
   background: rgba(255, 255, 255, 0.05);
   border-radius: calc(var(--unit) * 0.008);
   position: absolute;
@@ -358,8 +358,8 @@ h1 {
 }
 
 .tableau-column {
-  width: calc(var(--unit) * 0.095);
-  min-height: calc(var(--unit) * 0.134);
+  width: calc(var(--unit) * 0.119);
+  min-height: calc(var(--unit) * 0.168);
   border: calc(var(--unit) * 0.002) dashed rgba(255, 255, 255, 0.2);
   border-radius: calc(var(--unit) * 0.008);
   position: relative;
