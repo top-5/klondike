@@ -5,14 +5,17 @@
  * Columns: 0=A, 1=2, 2=3, ..., 9=10, 10=J, 11=Q, 12=K
  */
 
+import deckImage from '/deck.png?url';
+import backImage from '/back.jpg?url';
+
 export interface CardImageMap {
   get(suit: string, rank: string): string | undefined;
   cardBack: string;
   isLoaded: boolean;
 }
 
-const SPRITESHEET_PATH = '/deck.png';
-const CARD_BACK_PATH = '/back.jpg';
+const SPRITESHEET_PATH = deckImage;
+const CARD_BACK_PATH = backImage;
 const ROWS = 4;
 const COLS = 13;
 
