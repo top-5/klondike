@@ -157,10 +157,15 @@ h1 {
 .card[draggable="true"] {
   cursor: grab;
   transition: opacity 0.2s;
+  -webkit-user-drag: element;
 }
 
 .card[draggable="true"]:active {
   cursor: grabbing;
+}
+
+.card-dragging {
+  opacity: 0 !important;
 }
 
 .card-flying {
