@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { GameState, Card } from './types';
 import { loadCardSprites, type CardImageMap } from './cardSprites';
 import { createInitialState, drawFromStock, moveCards, isGameWon, canPlaceOnFoundation } from './gameLogic';
+import { soundManager } from './soundEffects';
 import './App.css';
 
 interface DragData {
@@ -102,6 +103,9 @@ function App() {
   const handleStockClick = () => {
     const newState = drawFromStock(gameState);
     setGameState(newState);
+    
+    // Play flip sound when drawing a card
+    soundManager.playFlip();
   };
 
   const handleDragStart = (source: 'waste' | 'tableau', index: number, cardIndex?: number) => {
@@ -144,6 +148,17 @@ function App() {
   const handleDrop = (target: 'tableau' | 'foundation', targetIndex: number) => {
     if (!dragData) return;
 
+    // Check if any tableau column will have a card flipped
+    let willFlipCard = false;
+    if (dragData.source === 'tableau') {
+      const sourceColumn = gameState.tableau[dragData.index];
+      const cardIndex = dragData.cardIndex ?? sourceColumn!.length - 1;
+      const remainingCards = cardIndex;
+      if (remainingCards > 0 && sourceColumn && !sourceColumn[remainingCards - 1]?.faceUp) {
+        willFlipCard = true;
+      }
+    }
+
     const newState = moveCards(
       gameState,
       dragData,
@@ -152,6 +167,12 @@ function App() {
 
     if (newState) {
       setGameState(newState);
+      
+      // Play flip sound if a card was revealed
+      if (willFlipCard) {
+        soundManager.playFlip();
+      }
+      
       if (isGameWon(newState)) {
         setTimeout(() => alert(`🎉 You won in ${newState.moves} moves!`), 100);
       }
@@ -160,6 +181,15 @@ function App() {
   };
 
   const handleAutoMoveToFoundation = (source: 'waste' | 'tableau', index: number) => {
+    // Check if this will flip a card in tableau
+    let willFlipCard = false;
+    if (source === 'tableau') {
+      const sourceColumn = gameState.tableau[index];
+      if (sourceColumn && sourceColumn.length > 1 && !sourceColumn[sourceColumn.length - 2]?.faceUp) {
+        willFlipCard = true;
+      }
+    }
+
     // Try to move the card to its foundation
     const newState = moveCards(
       gameState,
@@ -169,6 +199,12 @@ function App() {
 
     if (newState) {
       setGameState(newState);
+      
+      // Play flip sound if a card was revealed
+      if (willFlipCard) {
+        soundManager.playFlip();
+      }
+      
       if (isGameWon(newState)) {
         setTimeout(() => alert(`🎉 You won in ${newState.moves} moves!`), 100);
       }
