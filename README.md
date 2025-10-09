@@ -1,6 +1,9 @@
 # 🃏 Klondike Solitaire
 **Modern TypeScript Edition – React + Vite**
 
+[![Deploy to GitHub Pages](https://github.com/top-5/klondike/actions/workflows/deploy.yml/badge.svg)](https://github.com/top-5/klondike/actions/workflows/deploy.yml)
+[![License](https://img.shields.io/badge/license-Custom%20Non--Commercial-blue.svg)](LICENSE)
+
 A modern, type-safe implementation of Classic Klondike Solitaire, built with React, TypeScript, and Vite, featuring beautiful spritesheet cards, intuitive drag & drop, auto-move functionality, and full move validation logic.
 
 🎮 **[Play Now on GitHub Pages](https://top-5.github.io/klondike/)**
@@ -192,6 +195,23 @@ interface GameState {
 ```
 
 Applies transparent glyphs with shadow tint for vibrant Unicode cards.
+
+## 🚀 Deployment
+
+This project uses **GitHub Actions** for automatic deployment to GitHub Pages.
+
+### Automatic Deployment
+- Every push to `main` branch triggers the deployment workflow
+- The workflow builds the app and publishes to `gh-pages` branch
+- Live site updates automatically at: https://top-5.github.io/klondike/
+
+### Manual Deployment (Optional)
+```bash
+npm run deploy    # Build and deploy to GitHub Pages using gh-pages
+```
+
+### Workflow Status
+Check the [Actions tab](https://github.com/top-5/klondike/actions) to see deployment status and history.
 
 ## 🧱 Build & Deployment
 
