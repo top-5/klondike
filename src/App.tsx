@@ -3,6 +3,7 @@ import type { GameState, Card } from './types';
 import { loadCardSprites, type CardImageMap } from './cardSprites';
 import { createInitialState, drawFromStock, moveCards, isGameWon, canPlaceOnFoundation } from './gameLogic';
 import { soundManager } from './soundEffects';
+import { GameStateProbe } from './components/GameStateProbe';
 import './App.css';
 
 interface DragData {
@@ -113,6 +114,36 @@ function App() {
       window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [customDrag, dragData]);
+
+  // Expose AI control API to window (non-invasive)
+  useEffect(() => {
+    window.__klondike_api__ = {
+      getState: () => gameState,
+      clickStock: () => handleStockClick(),
+      performDrag: async (from: { pile: string; index: number }, to: { pile: string; index: number }) => {
+        // Map pile names to internal types
+        const sourceType = from.pile === 'waste' ? 'waste' : 'tableau';
+        const targetType = to.pile === 'foundation' ? 'foundation' : 'tableau';
+        
+        // Perform the move using internal game logic
+        const newState = moveCards(
+          gameState,
+          { source: sourceType, index: from.index },
+          { source: targetType, index: to.index }
+        );
+        
+        if (newState) {
+          setGameState(newState);
+          return true;
+        }
+        return false;
+      }
+    };
+
+    return () => {
+      delete window.__klondike_api__;
+    };
+  }, [gameState]);
 
   const handleNewGame = () => {
     setGameState(createInitialState());
@@ -485,6 +516,9 @@ function App() {
           ))}
         </div>
       )}
+
+      {/* AI Instrumentation Layer - Non-invasive state exposure */}
+      <GameStateProbe gameState={gameState} enabled={true} />
     </div>
   );
 }

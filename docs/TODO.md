@@ -35,11 +35,42 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 2. It confirms DOM instrumentation requirements (`data-testid`, state exposure)
 3. It demonstrates why lower-level `page.mouse.move()` and coordinate-based automation is needed
 
-### 🎯 Next Steps (Prioritized):
-1. **Add `data-testid` attributes** to all interactive elements (see section 9.2)
-2. **Implement `GameStateProbe` component** to expose hidden state in DOM (see section 5.1)
-3. **Build Playwright MCP server** using `page.mouse.down()`, `page.mouse.move()`, `page.mouse.up()` instead of `.dragTo()`
-4. **Test basic automation**: Click stock pile, drag cards by coordinates
+### ✅ **IMPLEMENTED SOLUTION (2025-10-09)**:
+
+**Non-Invasive AI Instrumentation Layer** - Complete and tested!
+
+1. **✅ GameStateProbe Component** (`src/components/GameStateProbe.tsx`):
+   - Renders 3 hidden `<script type="application/json">` elements in DOM
+   - `__klondike_state_visible__`: Visible cards only (for perception/vision models)
+   - `__klondike_state_canonical__`: Full state including hidden cards (for RL training)
+   - `__klondike_rules__`: Complete game rules, controls, scoring system
+   - Emits `klondike:state-change` custom events on state updates
+   - Zero impact on rendering or game logic
+
+2. **✅ Window API** (`window.__klondike_api__` in `App.tsx`):
+   - `getState()`: Returns current GameState object
+   - `clickStock()`: Programmatically draws cards from stock pile
+   - `performDrag(from, to)`: **Bypasses DOM events entirely**, calls `moveCards()` directly
+   - Fully typed TypeScript interface
+   - Tested and verified working via Playwright MCP
+
+3. **✅ Comprehensive Documentation**:
+   - `docs/AI-INSTRUCTIONS.md`: 500+ line guide with Playwright setup, state access, control methods
+   - `docs/AI-IMPLEMENTATION-SUMMARY.md`: Executive summary of architecture
+   - Complete example workflows for RL agents, vision models, LLM-guided play
+
+4. **✅ Testing Results**:
+   - Successfully moved A♦ to foundation via `performDrag()` API
+   - Stock pile drawing works programmatically
+   - Moves counter updates correctly
+   - All original mouse/touch drag handlers remain 100% functional
+   - Universal Game API design pattern proposed for other projects
+
+### 🎯 Next Steps (Updated Priorities):
+1. **Add `data-testid` attributes** to all interactive elements (see section 9.2) - easier element selection
+2. **Implement `getValidMoves()`** in window API for hint system support
+3. **Create example test suite** in `playwright-ai/` demonstrating AI control
+4. **Build dedicated MCP server** for external AI agents (optional, window API works great)
 
 ### 📊 Card Scaling Results:
 - **Original**: 0.095 × 0.134 (width × height as % of viewport)
@@ -56,6 +87,7 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 
 #### 1.1 Hint System (Heuristic-Based)
 - [ ] Implement `getValidMoves(state: GameState): Move[]` in `gameLogic.ts`
+- [ ] Add `getValidMoves()` to `window.__klondike_api__` for AI access
 - [ ] Add move ranking heuristic (prioritize: reveal hidden cards > build foundations > uncover tableau)
 - [ ] Create `HintEngine` class in `src/ai/hintEngine.ts`
 - [ ] Add UI hint button component (show top 3 suggested moves)
@@ -66,6 +98,7 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 - Extend `GameState` interface to include `suggestedMoves?: Move[]`
 - Use existing `canPlaceOnTableau()` and `canPlaceOnFoundation()` validators
 - Hint overlay should highlight source/target piles with CSS animation
+- **✅ FOUNDATION**: Window API (`window.__klondike_api__`) already implemented with `getState()`, `clickStock()`, `performDrag()`
 
 #### 1.2 Reinforcement Learning Mode
 - [ ] Create `AIAgent` interface in `src/ai/types.ts`
@@ -79,6 +112,8 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 - Reward function: +10 for foundation move, +5 for reveal, -1 per move
 - Use existing `moveCards()` and `drawFromStock()` logic
 - Store episodes in IndexedDB for large datasets
+- **✅ FOUNDATION**: `window.__klondike_api__.performDrag()` enables programmatic control
+- **✅ STATE ACCESS**: `GameStateProbe` component exposes canonical state in `__klondike_state_canonical__` (includes hidden cards for training)
 
 #### 1.3 Policy Network Integration
 - [ ] Define `PolicyModel` interface (input: state vector, output: move probabilities)
@@ -192,15 +227,25 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 **Goal**: Generate labeled datasets for computer vision model training.
 
 #### 5.1 DOM State Exposure
-- [ ] Create `GameStateProbe` component in `src/components/GameStateProbe.tsx`
-- [ ] Render hidden JSON in DOM:
+- [x] **IMPLEMENTED** Create `GameStateProbe` component in `src/components/GameStateProbe.tsx`
+- [x] **IMPLEMENTED** Render hidden JSON in DOM:
   ```html
-  <script id="__solitaire_state_truth__" type="application/json">
-    {"deckId":"123","visible":[["5♦"],["6♣","Q♠"]], ...}
+  <script id="__klondike_state_visible__" type="application/json">
+    {"stock":24,"wasteTop":null,"foundations":{...},"tableau":[...]}
+  </script>
+  <script id="__klondike_state_canonical__" type="application/json">
+    {"stockCards":[...],"wasteCards":[...],...} <!-- includes hidden cards -->
+  </script>
+  <script id="__klondike_rules__" type="application/json">
+    {"objective":"...","constraints":[...],"controls":{...}}
   </script>
   ```
-- [ ] Include visible-only and canonical (full) state
-- [ ] Add `?debug=1` flag to enable truth exposure (disable in production)
+- [x] **IMPLEMENTED** Include visible-only and canonical (full) state
+- [x] **IMPLEMENTED** Component emits `klondike:state-change` custom events
+- [ ] Add `?debug=1` flag to toggle state exposure (currently always enabled)
+- [ ] Add visual debug overlay showing exposed state in UI
+
+**✅ COMPLETED (2025-10-09)**: GameStateProbe component fully implemented and integrated into App.tsx
 
 #### 5.2 Capture API
 - [ ] Add `/api/capture` endpoint (or Playwright MCP integration)
@@ -338,16 +383,24 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 
 **Goal**: Expose structured APIs for external AI agents via Model Context Protocol.
 
+**✅ PARTIALLY IMPLEMENTED (2025-10-09)**: Window API approach provides superior alternative to MCP server.
+
 #### 9.1 MCP Server Setup
-- [ ] Create `mcp/solitaire-playwright/` directory
+- [ ] Create `mcp/solitaire-playwright/` directory (optional - window API works great)
 - [ ] Implement `server.ts` with Playwright browser automation
-- [ ] Define MCP tools (see detailed implementation in ChatGPT response):
-  - `get_visible_state`: Return visible game state from DOM
-  - `get_truth_state`: Return canonical state (debug mode only)
-  - `capture_image`: Screenshot + bounding box metadata
-  - `play_move`: Perform move via drag-and-drop simulation
-  - `new_game`: Start new game session
+- [ ] Define MCP tools:
+  - ~~`get_visible_state`~~ **✅ DONE**: Use `document.getElementById('__klondike_state_visible__')`
+  - ~~`get_truth_state`~~ **✅ DONE**: Use `document.getElementById('__klondike_state_canonical__')`
+  - `capture_image`: Screenshot + bounding box metadata (use Playwright `.screenshot()`)
+  - ~~`play_move`~~ **✅ DONE**: Use `window.__klondike_api__.performDrag(from, to)`
+  - ~~`new_game`~~ **✅ DONE**: Click "New Game" button via Playwright
   - `compare_vision_to_truth`: Evaluate CV model predictions
+
+**✅ IMPLEMENTED ALTERNATIVE**: `window.__klondike_api__` provides cleaner API:
+- `getState()`: Returns current GameState object
+- `clickStock()`: Draws cards from stock pile
+- `performDrag(from, to)`: Moves cards without DOM events
+- See `docs/AI-INSTRUCTIONS.md` for complete usage guide
 
 #### 9.2 DOM Instrumentation
 - [ ] Add `data-testid` attributes to all interactive elements:
@@ -356,18 +409,19 @@ Playwright's synthetic events don't go through this custom event flow, which is 
   <div data-testid="stock">
   <div data-testid="foundation-S">
   ```
-- [ ] Integrate `GameStateProbe` component (see section 5.1)
-- [ ] Expose optional `window.__solitaire_newGame__()` API for MCP
+- [x] **IMPLEMENTED** Integrate `GameStateProbe` component (exposes 3 hidden JSON elements)
+- [x] **IMPLEMENTED** Expose `window.__klondike_api__` with game control methods
 
 #### 9.3 Security & Configuration
-- [ ] Gate `get_truth_state` behind `?debug=1` query param
-- [ ] Rate-limit `capture_image` (max 10 req/min)
-- [ ] Add CORS headers for localhost MCP connections
-- [ ] Document MCP setup in `docs/MCP_INTEGRATION.md`
+- [ ] Gate truth state behind `?debug=1` query param (currently always enabled)
+- [ ] Rate-limit `capture_image` (max 10 req/min) if building dedicated MCP server
+- [ ] Add CORS headers for localhost MCP connections (Vite config)
+- [x] **IMPLEMENTED** Documentation in `docs/AI-INSTRUCTIONS.md` and `docs/AI-IMPLEMENTATION-SUMMARY.md`
 
 **Technical Notes**:
-- MCP server runs as separate Node.js process
-- Playwright connects to dev server at `http://localhost:10010`
+- **✅ Window API approach**: Simpler than MCP server, works with any automation tool
+- **✅ Playwright MCP**: Can directly use `window.__klondike_api__` via `page.evaluate()`
+- **✅ Non-invasive**: Zero changes to game logic, drag handlers remain intact
 - Use headless mode for training, headful for debugging
 
 ---
@@ -506,16 +560,19 @@ Playwright's synthetic events don't go through this custom event flow, which is 
 ## 📋 Implementation Priority Matrix
 
 ### Phase 1: Core AI Infrastructure (4-6 weeks)
-1. Telemetry system (section 4)
-2. DOM state exposure (section 5.1)
-3. Heuristic hint system (section 1.1)
-4. Basic statistics dashboard (section 6.2)
+1. ~~Telemetry system (section 4)~~ (pending)
+2. ~~DOM state exposure (section 5.1)~~ **✅ COMPLETED (GameStateProbe component)**
+3. ~~Heuristic hint system (section 1.1)~~ (pending - add `getValidMoves()` to window API)
+4. ~~Basic statistics dashboard (section 6.2)~~ (pending)
+
+**✅ FOUNDATION COMPLETE**: Window API (`window.__klondike_api__`) and GameStateProbe enable all future AI features.
 
 ### Phase 2: MCP & Vision (3-4 weeks)
-1. Playwright MCP server (section 9)
+1. ~~Playwright MCP server (section 9)~~ **✅ WINDOW API IMPLEMENTED** (simpler alternative)
 2. Capture API + bounding boxes (section 5.2)
 3. Vision evaluation loop (section 5.3)
 4. Undo/redo system (section 6.1)
+5. Add `data-testid` attributes for easier element selection (section 9.2)
 
 ### Phase 3: Variant Support (4-6 weeks)
 1. Abstract game engine (section 8.1-8.2)
